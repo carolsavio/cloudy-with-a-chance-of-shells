@@ -10,6 +10,8 @@
 ![Licença](https://img.shields.io/badge/Licença-MIT-green?style=for-the-badge)
 ![Uso](https://img.shields.io/badge/Uso-Apenas%20educacional-blue?style=for-the-badge)
 
+![Banner do projeto](/docs/images/cloudy-with-a-chances-of-shells.png)
+
 Laboratório de pentest provisionado na AWS via Terraform, derivado do projeto [aws-resilient-web-infra](https://github.com/carolsavio/aws-resilient-web-infra). A infraestrutura é **intencionalmente vulnerável** para fins de estudo de segurança ofensiva.
 
 > ⚠️ **AVISO LEGAL**: Este ambiente contém vulnerabilidades deliberadas. Use exclusivamente em sua própria conta AWS, nunca em produção. O autor não se responsabiliza por uso indevido.
