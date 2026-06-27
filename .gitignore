@@ -17,7 +17,7 @@ override.tf.json
 crash.log
 crash.*.log
 
-# 2. PYTHON (AUTOMAÇÃO)
+# 2. PYTHON
 # Arquivos compilados do Python
 __pycache__/
 *.py[cod]

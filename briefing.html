@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PetroTask™ — Briefing de Pentest</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=Space+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0f; --surface: #12121a; --surface2: #1a1a28;
+      --border: #2a2a3d; --red: #ff1744; --red-glow: rgba(255,23,68,0.15);
+      --text: #e8e8f0; --muted: #6b6b8a; --green: #00e676; --yellow: #ffd600;
+      --mono: 'Space Mono', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg); color: var(--text);
+      font-family: 'Inter', sans-serif; min-height: 100vh;
+      padding: 2rem 1rem;
+      background-image: radial-gradient(ellipse at 50% 0%, rgba(255,23,68,0.06) 0%, transparent 60%);
+    }
+
+    /* ── Header ── */
+    .header {
+      max-width: 780px; margin: 0 auto 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 1rem; border-bottom: 1px solid var(--border);
+    }
+    .logo { font-size: 1.2rem; font-weight: 900; }
+    .logo span { color: var(--red); }
+    .logo sup { font-size: 0.5rem; color: var(--muted); }
+    .confidential {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 2px;
+      color: var(--red); border: 1px solid var(--red);
+      padding: 0.2rem 0.6rem; border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    /* ── Documento ── */
+    .doc {
+      max-width: 780px; margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .doc-header {
+      background: var(--surface2);
+      border-bottom: 2px solid var(--red);
+      padding: 1.5rem 2rem;
+      box-shadow: 0 0 30px var(--red-glow);
+    }
+
+    .doc-type {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 2px;
+      color: var(--red); text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+
+    .doc-title {
+      font-size: 1.5rem; font-weight: 900; margin-bottom: 0.3rem;
+    }
+
+    .doc-subtitle { font-size: 0.85rem; color: var(--muted); }
+
+    .doc-meta {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem; padding: 1.5rem 2rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+    }
+
+    .meta-item label {
+      display: block; font-size: 0.65rem; font-weight: 700;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: 1px; margin-bottom: 0.3rem;
+    }
+    .meta-item span { font-size: 0.85rem; font-weight: 600; }
+    .meta-item span.red { color: var(--red); }
+    .meta-item span.green { color: var(--green); }
+    .meta-item span.yellow { color: var(--yellow); }
+
+    /* ── Corpo ── */
+    .doc-body { padding: 2rem; }
+
+    .section { margin-bottom: 2rem; }
+    .section h2 {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--red);
+      margin-bottom: 1rem; padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .section h2::before {
+      content: ''; display: inline-block;
+      width: 3px; height: 14px; background: var(--red); border-radius: 2px;
+    }
+    .section p {
+      font-size: 0.88rem; color: #c0c0d0; line-height: 1.7;
+      margin-bottom: 0.75rem;
+    }
+
+    /* ── Cards de escopo ── */
+    .scope-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;
+      margin-top: 0.75rem;
+    }
+    .scope-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1rem;
+    }
+    .scope-card .scope-label {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+    .scope-card.in .scope-label  { color: var(--green); }
+    .scope-card.out .scope-label { color: var(--red); }
+    .scope-card ul { list-style: none; }
+    .scope-card ul li {
+      font-size: 0.8rem; color: var(--muted);
+      padding: 0.2rem 0; display: flex; align-items: flex-start; gap: 0.5rem;
+    }
+    .scope-card.in  ul li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+    .scope-card.out ul li::before { content: '✗'; color: var(--red);   font-weight: 700; flex-shrink: 0; }
+
+    /* ── Objetivos ── */
+    .objectives { display: flex; flex-direction: column; gap: 0.6rem; }
+    .obj {
+      display: flex; align-items: flex-start; gap: 1rem;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 0.85rem 1rem;
+    }
+    .obj-num {
+      font-family: var(--mono); font-size: 0.75rem; font-weight: 700;
+      color: var(--red); background: rgba(255,23,68,0.1);
+      border: 1px solid rgba(255,23,68,0.3);
+      width: 28px; height: 28px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .obj-text { font-size: 0.83rem; color: #c0c0d0; line-height: 1.5; }
+    .obj-text strong { color: var(--text); }
+
+    /* ── Contatos ── */
+    .contacts { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+    .contact-card {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1rem;
+    }
+    .contact-name { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.15rem; }
+    .contact-role { font-size: 0.72rem; color: var(--muted); margin-bottom: 0.6rem; }
+    .contact-info { font-size: 0.75rem; color: var(--muted); font-family: var(--mono); }
+
+    /* ── Alvo técnico ── */
+    .target-box {
+      background: #0a0a0f; border: 1px solid var(--border);
+      border-radius: 8px; padding: 1.25rem;
+      font-family: var(--mono); font-size: 0.78rem;
+    }
+    .target-box .trow {
+      display: flex; justify-content: space-between;
+      padding: 0.35rem 0; border-bottom: 1px solid var(--border);
+    }
+    .target-box .trow:last-child { border-bottom: none; }
+    .target-box .tkey { color: var(--muted); }
+    .target-box .tval { color: var(--green); }
+    .target-box .tval.red { color: var(--red); }
+    .target-box .tval.yellow { color: var(--yellow); }
+
+    /* ── Flag box ── */
+    .flag-box {
+      background: rgba(255,23,68,0.05);
+      border: 1px dashed rgba(255,23,68,0.5);
+      border-radius: 8px; padding: 1.25rem;
+      text-align: center;
+    }
+    .flag-box p { font-size: 0.83rem; color: var(--muted); margin-bottom: 0.75rem; }
+    .flag-placeholder {
+      font-family: var(--mono); font-size: 0.9rem; font-weight: 700;
+      color: var(--red); letter-spacing: 2px;
+      background: rgba(255,23,68,0.08); padding: 0.6rem 1.5rem;
+      border-radius: 6px; display: inline-block;
+    }
+    .flag-hint {
+      font-size: 0.72rem; color: var(--muted); margin-top: 0.75rem;
+      font-style: italic;
+    }
+
+    /* ── Assinatura ── */
+    .signature {
+      margin-top: 2rem; padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: flex-end;
+    }
+    .sig-left p { font-size: 0.78rem; color: var(--muted); line-height: 1.7; }
+    .sig-right { text-align: right; }
+    .sig-name { font-size: 0.9rem; font-weight: 700; }
+    .sig-role { font-size: 0.72rem; color: var(--muted); }
+    .sig-date { font-size: 0.7rem; color: var(--muted); margin-top: 0.25rem;
+      font-family: var(--mono); }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding: 1.5rem 2rem;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      background: var(--surface2);
+    }
+    .cta-text { font-size: 0.82rem; color: var(--muted); }
+    .cta-text strong { color: var(--text); display: block; margin-bottom: 0.2rem; }
+    .cta-btn {
+      background: var(--red); color: #fff; font-weight: 700; font-size: 0.9rem;
+      padding: 0.75rem 2rem; border-radius: 8px; text-decoration: none;
+      border: none; cursor: pointer; white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+    .cta-btn:hover { opacity: 0.85; }
+
+    @media (max-width: 600px) {
+      .scope-grid, .contacts { grid-template-columns: 1fr; }
+      .doc-body { padding: 1.25rem; }
+      .signature { flex-direction: column; gap: 1rem; }
+      .cta-section { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="logo"><span>Petro</span>Task<sup>™</sup></div>
+    <div class="confidential">⚠ Confidencial</div>
+  </div>
+
+  <div class="doc">
+
+    <!-- Cabeçalho do documento -->
+    <div class="doc-header">
+      <div class="doc-type">Ordem de Serviço — Teste de Segurança</div>
+      <div class="doc-title">Contrato de Pentest — Portal Corporativo</div>
+      <div class="doc-subtitle">PetroTask Systems Inc. × Consultor Independente de Segurança</div>
+    </div>
+
+    <!-- Metadados -->
+    <div class="doc-meta">
+      <div class="meta-item">
+        <label>Número do contrato</label>
+        <span>OS-2024-SEC-0042</span>
+      </div>
+      <div class="meta-item">
+        <label>Data de início</label>
+        <span>Hoje</span>
+      </div>
+      <div class="meta-item">
+        <label>Prazo</label>
+        <span class="yellow">Sem prazo definido</span>
+      </div>
+      <div class="meta-item">
+        <label>Tipo de teste</label>
+        <span>Black Box</span>
+      </div>
+      <div class="meta-item">
+        <label>Status</label>
+        <span class="green">● Autorizado</span>
+      </div>
+      <div class="meta-item">
+        <label>Prioridade</label>
+        <span class="red">Alta</span>
+      </div>
+    </div>
+
+    <div class="doc-body">
+
+      <!-- Contexto -->
+      <div class="section">
+        <h2>Contexto</h2>
+        <p>
+          A <strong>PetroTask Systems Inc.</strong> é uma startup de gestão de tarefas que levantou
+          R$ 47 milhões em rodada Série A para construir um to-do list com "IA Quântica e Blockchain™".
+          Nosso portal corporativo está em produção desde janeiro de 2024 e nunca passou por
+          nenhum tipo de avaliação de segurança.
+        </p>
+        <p>
+          Após um incidente interno onde o estagiário Jvitor acidentalmente commitou as credenciais
+          de produção no GitHub público, a diretoria decidiu contratar um especialista externo para
+          avaliar a postura de segurança do ambiente. Você foi selecionado.
+        </p>
+        <p>
+          Não temos ideia do que vocês fazem. O CTO disse que "segurança é coisa de DevOps".
+          O DevOps disse que "segurança é coisa do time de produto". O time de produto disse que
+          "a gente lança rápido e corrige depois". Boa sorte.
+        </p>
+      </div>
+
+      <!-- Escopo -->
+      <div class="section">
+        <h2>Escopo do teste</h2>
+        <div class="scope-grid">
+          <div class="scope-card in">
+            <div class="scope-label">Dentro do escopo</div>
+            <ul>
+              <li>Portal web — aplicação principal</li>
+              <li>Mecanismo de autenticação</li>
+              <li>Funcionalidades autenticadas</li>
+              <li>Armazenamento de arquivos (S3)</li>
+              <li>Infraestrutura de cloud (AWS)</li>
+              <li>APIs e endpoints internos</li>
+            </ul>
+          </div>
+          <div class="scope-card out">
+            <div class="scope-label">Fora do escopo</div>
+            <ul>
+              <li>Ataques de negação de serviço (DoS)</li>
+              <li>Engenharia social contra funcionários</li>
+              <li>Infraestrutura da AWS em si</li>
+              <li>Sistemas de terceiros integrados</li>
+              <li>Ataques físicos às instalações</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Objetivos -->
+      <div class="section">
+        <h2>Objetivos do teste</h2>
+        <div class="objectives">
+          <div class="obj">
+            <div class="obj-num">01</div>
+            <div class="obj-text"><strong>Reconhecimento:</strong> Identificar superfície de ataque, tecnologias em uso, informações expostas publicamente e possíveis vetores de entrada.</div>
+          </div>
+          <div class="obj">
+            <div class="obj-num">02</div>
+            <div class="obj-text"><strong>Exploração web:</strong> Identificar e explorar vulnerabilidades na aplicação web — injeções, falhas de autenticação, controle de acesso, exposição de dados.</div>
+          </div>
+          <div class="obj">
+            <div class="obj-num">03</div>
+            <div class="obj-text"><strong>Acesso ao servidor:</strong> Tentar obter execução de código no servidor a partir de vulnerabilidades encontradas na aplicação.</div>
+          </div>
+          <div class="obj">
+            <div class="obj-num">04</div>
+            <div class="obj-text"><strong>Escalação de privilégios:</strong> Avaliar se um atacante com acesso ao servidor consegue comprometer a infraestrutura de cloud (IAM, S3, metadata endpoint).</div>
+          </div>
+          <div class="obj">
+            <div class="obj-num">05</div>
+            <div class="obj-text"><strong>Flag final:</strong> Exfiltrar o arquivo <code style="background:#0a0a0f;padding:2px 6px;border-radius:4px;font-family:var(--mono);font-size:0.78rem;color:#ff1744">s3://&lt;bucket&gt;/private/flag.txt</code> como prova de comprometimento total do ambiente.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alvo técnico -->
+      <div class="section">
+        <h2>Informações do alvo</h2>
+        <div class="target-box">
+          <div class="trow"><span class="tkey">Aplicação web</span>     <span class="tval">http://&lt;IP_DO_LAB&gt;/dvwa</span></div>
+          <div class="trow"><span class="tkey">Tecnologia (declarada)</span> <span class="tval yellow">Desconhecida — "stack moderna"</span></div>
+          <div class="trow"><span class="tkey">Cloud provider</span>     <span class="tval">Amazon Web Services (AWS)</span></div>
+          <div class="trow"><span class="tkey">Armazenamento</span>      <span class="tval">S3 — nome do bucket a descobrir</span></div>
+          <div class="trow"><span class="tkey">Credenciais iniciais</span><span class="tval red">Nenhuma fornecida (black box)</span></div>
+          <div class="trow"><span class="tkey">Dica do estagiário</span> <span class="tval yellow">Verificar o robots.txt 👀</span></div>
+        </div>
+      </div>
+
+      <!-- Flag -->
+      <div class="section">
+        <h2>Entregável final</h2>
+        <div class="flag-box">
+          <p>Ao comprometer o ambiente completamente, você encontrará a flag no S3.<br>Cole abaixo como prova de comprometimento total:</p>
+          <div class="flag-placeholder">FLAG{????????????????????}</div>
+          <p class="flag-hint">A flag é gerada unicamente para o seu ambiente. Encadeie as vulnerabilidades para obtê-la.</p>
+        </div>
+      </div>
+
+      <!-- Contatos -->
+      <div class="section">
+        <h2>Contatos da PetroTask</h2>
+        <div class="contacts">
+          <div class="contact-card">
+            <div class="contact-name">Carol Jones</div>
+            <div class="contact-role">CTO — Chief Technology Officer</div>
+            <div class="contact-info">Jones@petrotask.io<br>Não responde e-mails antes das 14h</div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-name">Jvitor "O Estagiário"</div>
+            <div class="contact-role">DevOps / Responsável pelo incidente</div>
+            <div class="contact-info">jvitor@petrotask.io<br>"Eu jurei que era o .gitignore"</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assinatura -->
+      <div class="signature">
+        <div class="sig-left">
+          <p>
+            Este documento autoriza formalmente a realização de testes de segurança<br>
+            no ambiente descrito acima, dentro do escopo definido.<br>
+            Qualquer atividade fora do escopo é de responsabilidade do consultor.
+          </p>
+        </div>
+        <div class="sig-right">
+          <div class="sig-name">Carol Jones</div>
+          <div class="sig-role">CTO, PetroTask Systems Inc.</div>
+          <div class="sig-date">Assinado digitalmente • 2024</div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CTA para o lab -->
+    <div class="cta-section">
+      <div class="cta-text">
+        <strong>Ambiente pronto para teste</strong>
+        Leia o briefing com atenção antes de começar. Boa caçada.
+      </div>
+      <a href="/dvwa" class="cta-btn">Acessar a aplicação →</a>
+    </div>
+
+  </div>
+
+</body>
+</html>

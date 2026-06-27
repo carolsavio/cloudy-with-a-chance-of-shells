@@ -17,9 +17,28 @@ Laboratório de pentest provisionado na AWS via Terraform, derivado do projeto [
 > ⚠️ **AVISO LEGAL**: Este ambiente contém vulnerabilidades deliberadas. Use exclusivamente em sua própria conta AWS, nunca em produção. O autor não se responsabiliza por uso indevido.
 
 ---
+## O que é este projeto?
 
-## Objetivo
+A **PetroTask™** é uma startup fictícia que levantou 10 milhões de dólares para construir um to-do list com "IA Quântica e Blockchain". O sistema deles é um desastre de segurança — e é exatamente por isso que você foi contratado para fazer o pentest.
 
-Praticar as fases de um ataque real em um ambiente controlado na nuvem, cobrindo recon, exploração web, escalação de privilégios e pivoting para serviços cloud.
+Este lab provisiona automaticamente na AWS:
+- Uma instância EC2 com a aplicação web vulnerável (DVWA com tema PetroTask)
+- Um bucket S3 com arquivos expostos publicamente
+- Infraestrutura com misconfigurations reais de cloud (IAM, IMDSv1, S3)
+- Alertas de custo para não ter surpresas na fatura
 
-Este projeto **não é um CTF** com flags escondidas — é uma simulação de cadeia de ataque realista, onde cada vulnerabilidade abre caminho para a próxima.
+**Baseado no OWASP Top 10**, cobrindo vulnerabilidades web e de cloud em conjunto.
+
+---
+
+## ⚠️ Aviso Legal
+
+> Este ambiente é **intencionalmente vulnerável** e deve ser usado **apenas para fins educacionais**.
+
+- ✓ Use somente na **sua própria conta AWS**
+- ✓ Siga a [Política de Testes de Penetração da AWS](https://aws.amazon.com/security/penetration-testing/)
+- ✓ Execute `terraform destroy` ao finalizar - não deixe o lab no ar
+- ✖ Nunca aponte ferramentas para sistemas que não são seus
+- ✖ Não use este ambiente para atividades ilegais
+
+---
